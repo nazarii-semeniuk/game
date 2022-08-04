@@ -1,0 +1,30 @@
+{
+  "name": "game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/game.js",
+  "type": "module",
+  "scripts": {
+    "dev": "webpack serve --config ./webpack.dev.js",
+    "build": "webpack --config ./webpack.production.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@yushijinhun/three-minifier-webpack": "^0.4.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "dat.gui": "^0.7.9",
+    "html-webpack-plugin": "^5.5.0",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.3",
+    "webpack-merge": "^5.8.0"
+  },
+  "engines": {
+    "node": "14.15.5"
+  },
+  "dependencies": {
+    "three": "^0.143.0"
+  }
+}
