@@ -3,8 +3,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Terrain } from './js/Terrain.js';
 
 // Debug
-import { GUI } from 'dat.gui';
-const gui = new GUI();
+import Stats from 'stats.js';
+
+const stats = new Stats();
+document.body.appendChild(stats.domElement);
+
 
 const scene = new Scene();
 scene.background = new Color('skyblue');
@@ -60,6 +63,7 @@ let speed;
 let velocity = 0.0;
 
 const animate = () => {
+    stats.begin();
 
     speed = 0.0;
     if(keys.w) {
@@ -84,7 +88,10 @@ const animate = () => {
     camera.position.z = cube.position.z + -6;
     camera.position.x = cube.position.x;
 
-    requestAnimationFrame(animate);
     renderer.render(scene, camera);
+
+    stats.end();
+
+    requestAnimationFrame(animate);
 }
 animate();
