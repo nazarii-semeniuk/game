@@ -11,7 +11,7 @@ export class Player {
             a: false,
             d: false
         }
-        this.spped = 0.0;
+        this.speed = 0.0;
         this.velocity = 0.0;
         this.player;
         this.camera;
