@@ -16,7 +16,6 @@ export class Terrain {
         
         plane.rotation.x = - Math.PI / 2;
         plane.position.y = -0.5;
-        console.log(plane);
 
         this.scene.add(plane);
     }
