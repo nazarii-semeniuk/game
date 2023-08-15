@@ -12,7 +12,7 @@ let renderer = new WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const player = new Player(scene, renderer);
+const player = new Player(scene);
 
 const animate = () => {
 

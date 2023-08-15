@@ -1,5 +1,4 @@
-import { PerspectiveCamera, BoxGeometry, MeshBasicMaterial, Mesh, Color, Scene, WebGLRenderer } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { PerspectiveCamera, BoxGeometry, MeshBasicMaterial, Mesh, Color, Scene, WebGLRenderer, Vector3, Object3D } from 'three';
 
 type ActiveKeys = {
     w: boolean;
@@ -10,17 +9,22 @@ type ActiveKeys = {
 
 export default class Player {
     private scene: Scene;
-    private renderer: WebGLRenderer;
     private keys: ActiveKeys;
     private speed: number;
     private velocity: number;
     private player: Mesh;
-    private orbitControls: OrbitControls;
+
+    private a: Vector3;
+    private b: Vector3;
+    private dir: Vector3;
+    private goal: Object3D;
+    private temp: Vector3;
+    private follow: Object3D;
+
     public camera: PerspectiveCamera;
 
-    constructor(scene: Scene, renderer: WebGLRenderer) {
+    constructor(scene: Scene) {
         this.scene = scene;
-        this.renderer = renderer;
         this.keys = {
             w: false,
             s: false,
@@ -30,9 +34,19 @@ export default class Player {
         this.speed = 0.0;
         this.velocity = 0.0;
 
+        this.a = new Vector3();
+        this.b = new Vector3();
+        this.dir = new Vector3();
+        this.goal = new Object3D();
+        this.temp = new Vector3();
+        this.follow = new Object3D();
+        this.follow.position.z = -5;
+
         this.player = this.createPlayer();
         this.camera = this.createCamera();
-        this.orbitControls = this.createOrbitControls(this.camera, this.renderer);
+        this.goal.add(this.camera);
+        this.camera.lookAt(this.player.position);
+
         this.activateKeysListener();
     }
 
@@ -40,6 +54,7 @@ export default class Player {
         const geometry = new BoxGeometry(1, 1, 1);
         const material = new MeshBasicMaterial( { color: new Color('orange') } );
         const player = new Mesh(geometry, material);
+        player.add(this.follow);
         this.scene.add(player);
         return player;
     }
@@ -51,19 +66,8 @@ export default class Player {
             0.1,
             2000
         );
+        camera.position.set(0, 3, 0);
         return camera;
-    }
-
-    createOrbitControls(camera: PerspectiveCamera, renderer: WebGLRenderer) {
-        const orbitControls = new OrbitControls(camera, renderer.domElement);
-        orbitControls.enableDamping = true;
-        orbitControls.enablePan = true;
-        orbitControls.minDistance = 5;
-        orbitControls.maxDistance = 20;
-        orbitControls.maxPolarAngle = Math.PI / 2 - 0.05;
-        orbitControls.minPolarAngle = Math.PI / 4;
-        orbitControls.update();
-        return orbitControls;
     }
 
     activateKeysListener() {
@@ -97,12 +101,17 @@ export default class Player {
         } else if(this.keys.d) {
             this.player.rotateY(-0.05);
         }
+
+        this.a.lerp(this.player.position, 0.4);
+        this.b.copy(this.goal.position);
     
-        this.camera.lookAt(this.player.position);
-    
-        this.camera.position.y = this.player.position.y + 3;
-        this.camera.position.z = this.player.position.z + -6;
-        this.camera.position.x = this.player.position.x;
+        this.dir.copy( this.a ).sub( this.b ).normalize();
+        const dis = this.a.distanceTo( this.b ) - 5;
+        this.goal.position.addScaledVector( this.dir, dis );
+        this.goal.position.lerp(this.temp, 0.02);
+        this.temp.setFromMatrixPosition(this.follow.matrixWorld);
+        
+        this.camera.lookAt( this.player.position );
     }
 
 }
