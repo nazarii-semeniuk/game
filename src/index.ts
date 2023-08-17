@@ -1,4 +1,4 @@
-import { Scene, WebGLRenderer, Color } from 'three';
+import { Scene, WebGLRenderer, Color, AmbientLight, DirectionalLight } from 'three';
 import Player from './ts/Player';
 import Hero from './ts/Hero';
 import Terrain from './ts/Terrain';
@@ -17,6 +17,13 @@ WebSockets.onOpen(() => {
 
     scene = new Scene();
     scene.background = new Color('skyblue');
+
+    const directLight = new DirectionalLight(0xffffff, 1);
+    directLight.position.set(0, 10, 0).normalize();
+    scene.add(directLight);
+
+    const ambientLight = new AmbientLight(0x404040);
+    scene.add(ambientLight);
 
     terrain = new Terrain(scene);
     terrain.create();
