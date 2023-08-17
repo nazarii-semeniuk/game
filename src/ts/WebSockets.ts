@@ -1,3 +1,5 @@
+import { WebsocketMessage } from "./types/WebsocketMessage";
+
 class WebSockets {
 
     private socket: WebSocket;
@@ -19,14 +21,14 @@ class WebSockets {
         }
     }
 
-    public onMessage(callback: (data: any) => void) {
+    public onMessage(callback: (data: WebsocketMessage) => void) {
         this.socket.onmessage = (e) => {
-            const data = JSON.parse(e.data);
+            const data = JSON.parse(e.data) as WebsocketMessage;
             callback(data);
         }
     }
 
-    public send(data: any) {
+    public send(data: WebsocketMessage) {
         this.socket.send(JSON.stringify(data));
     }
 

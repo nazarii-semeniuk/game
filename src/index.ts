@@ -4,6 +4,7 @@ import Hero from './ts/Hero';
 import Terrain from './ts/Terrain';
 import { PlayerInfo } from './ts/types/PlayerInfo'
 import WebSockets from './ts/WebSockets';
+import { WebsocketMessage } from './ts/types/WebsocketMessage';
 
 let id: string;
 const playersOnline: Player[] = [];
@@ -26,22 +27,27 @@ WebSockets.onOpen(() => {
 
 });
 
-WebSockets.onMessage((data: any) => {
+WebSockets.onMessage((data: WebsocketMessage) => {
 
-    if (data.type === 'init') {
-        id = data.id;
-        data.players.forEach((player: PlayerInfo) => {
-            playersOnline.push(new Player(scene, player));
-        });
+    if (data.type === 'playerInit') {
+        id = data.player.id;
+        if(data.playersOnline && data.playersOnline.length > 0) {
+            data.playersOnline.forEach((player: PlayerInfo) => {
+                playersOnline.push(new Player(scene, player));
+            });
+        }
 
         const hero = new Hero(scene);
+
         hero.setUpdateCallback((x: number, y: number, z: number) => {
             WebSockets.send({
-                type: 'move',
-                id,
-                x,
-                y,
-                z
+                type: 'playerMove',
+                player: {
+                    id,
+                    x,
+                    y,
+                    z
+                }
             });
         });
 
@@ -57,19 +63,19 @@ WebSockets.onMessage((data: any) => {
         animate();
     }
 
-    if(data.type === 'move') {
+    if(data.type === 'playerMove') {
         const player = playersOnline.find((player: Player) => player.id === data.player.id);
         if(player && player.id !== id) {
             player.updatePlayerPosition(data.player.x, data.player.y, data.player.z);
         }
     }
 
-    if(data.type === 'join') {
+    if(data.type === 'playerJoin') {
         playersOnline.push(new Player(scene, data.player));
     }
 
-    if(data.type === 'leave') {
-        const player = playersOnline.find((player: Player) => player.id === data.id);
+    if(data.type === 'playerLeave') {
+        const player = playersOnline.find((player: Player) => player.id === data.player.id);
         if(player) {
             player.removePlayer();
             playersOnline.splice(playersOnline.indexOf(player), 1);
