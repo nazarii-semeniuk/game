@@ -2,15 +2,15 @@ import { merge } from 'webpack-merge';
 import common from './webpack.common.js';
 import path from 'path';
 
-const __dirname = path.resolve('');
+const __dirname = path.resolve();
 
 export default merge(common, {
-    mode: 'development', // Don't minify the source
-    devtool: 'eval-source-map', // Source map for easier development
+    mode: 'development',
+    devtool: 'eval-source-map',
     devServer: {
         static: {
-            directory: path.join(__dirname, './dist'), // Serve static files from here
+            directory: path.join(__dirname, 'dist'),
         },
-        hot: true, // Reload our page when the code changes
-    },
-})
+        hot: true
+    }
+});

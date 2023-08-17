@@ -2,30 +2,29 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 export default {
+    entry: './src/index.ts',
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
+            }
+        ]
+    },
+    resolve: {
+        extensions: [
+            '.ts', '.js'
+        ]
+    },
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/html/index.html'
         }),
         new CopyWebpackPlugin({
             patterns: [
-                {
-                    from: 'src/static',
-                    to: 'static',
-                    noErrorOnMissing: true
-                }
+                { from: './src/assets', to: 'assets' }
             ]
         })
-    ],
-    entry: './src/game.js',
-    module: {
-        rules: [
-            {
-                // Load our GLSL shaders in as text
-                test: /.(glsl|vs|fs|vert|frag)$/, exclude: /node_modules/, use: ['raw-loader']
-            },
-        ],
-    },
-    resolve: {
-        extensions: ['.js'],
-    },
+    ]
 }
