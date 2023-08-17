@@ -19,6 +19,7 @@ export default class Player {
         const player = new Mesh(geometry, material);
         player.position.set(x, y, z);
         this.scene.add(player);
+        console.log('spawned player')
         return player;
     }
 

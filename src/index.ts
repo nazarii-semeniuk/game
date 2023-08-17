@@ -32,7 +32,10 @@ WebSockets.onMessage((data: WebsocketMessage) => {
     if (data.type === 'playerInit') {
         id = data.player.id;
         if(data.playersOnline && data.playersOnline.length > 0) {
-            data.playersOnline.forEach((player: PlayerInfo) => {
+            data.playersOnline.filter((player: PlayerInfo) => {
+                return player.id !== id;
+            }).forEach((player: PlayerInfo) => {
+                console.log('adding player')
                 playersOnline.push(new Player(scene, player));
             });
         }
@@ -71,7 +74,9 @@ WebSockets.onMessage((data: WebsocketMessage) => {
     }
 
     if(data.type === 'playerJoin') {
-        playersOnline.push(new Player(scene, data.player));
+        if(data.player.id !== id) {
+            playersOnline.push(new Player(scene, data.player));
+        }
     }
 
     if(data.type === 'playerLeave') {
