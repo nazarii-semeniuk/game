@@ -35,7 +35,6 @@ WebSockets.onMessage((data: WebsocketMessage) => {
             data.playersOnline.filter((player: PlayerInfo) => {
                 return player.id !== id;
             }).forEach((player: PlayerInfo) => {
-                console.log('adding player')
                 playersOnline.push(new Player(scene, player));
             });
         }
